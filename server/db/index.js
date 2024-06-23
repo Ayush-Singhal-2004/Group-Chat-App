@@ -11,8 +11,8 @@ const connectDB = async() => {
             console.log(err);
             process.exit(1);
         })
-        httpServer.listen(process.env.PORT, () => {
-            console.log(`Server is running on port ${process.env.PORT}`);
+        httpServer.listen(process.env.PORT || 8001, () => {
+            console.log(`Server is running on port ${process.env.PORT || 8001}`);
         })
         Promise.resolve();
     }
