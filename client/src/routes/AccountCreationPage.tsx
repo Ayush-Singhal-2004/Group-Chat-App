@@ -15,7 +15,7 @@ function ProfileImageSection({imageSectionFn, profileImageFn}: ProfileImageSecti
     const [images, setImages] = useState<string[]>([]);
 
     useEffect(() => {
-        fetch("public/data/images.json")
+        fetch("/data/images.json")
         .then((response) => {
             return response.json()
         })
