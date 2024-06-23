@@ -18,7 +18,7 @@ function JoinRoom() {
 
     const joinRoom = async() => {
         if(user.email) {
-            const response = await axios.post("http://localhost:3001/room/join", {
+            const response = await axios.post("https://group-chat-app-poq9.onrender.com:10000/room/join", {
                 "userEmail": user.email,
                 "roomId": roomId
             })

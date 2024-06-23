@@ -7,7 +7,7 @@ import { setRoom } from "../redux/feature/room/roomSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export const socket = io("http://localhost:3001");
+export const socket = io("https://group-chat-app-poq9.onrender.com:10000");
 
 function Message({message}: any) {
     return (
@@ -56,7 +56,7 @@ function ChatRoom() {
 
     useEffect(() => {
         if(room.roomId) {
-            axios.get(`http://localhost:3001/room/${room.roomId}/chats`)
+            axios.get(`https://group-chat-app-poq9.onrender.com:10000/room/${room.roomId}/chats`)
             .then((res) => {
                 console.log(res);
                 setMessages(res.data);
@@ -129,7 +129,7 @@ function ChatRoom() {
         // exit room logic
         if(room.roomId && user.email) {
             try {
-                const response = await axios.post("http://localhost:3001/room/exit", {
+                const response = await axios.post("https://group-chat-app-poq9.onrender.com:10000/room/exit", {
                     "userEmail":  user.email,
                     "roomId": room.roomId
                 });

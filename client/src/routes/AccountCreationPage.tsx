@@ -71,7 +71,7 @@ function AccountCreationPage() {
             const user = result.user;
 
             //add user data to db
-            axios.post("http://localhost:3001/user/create", {
+            axios.post("https://group-chat-app-poq9.onrender.com:10000/user/create", {
                 "profileImage": profileImage,
                 "email": user.email,
                 "username": name

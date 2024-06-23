@@ -34,9 +34,9 @@ function App() {
 
     useEffect(() => {
         if(userEmail) {
-            axios.get(`http://localhost:3001/user/${userEmail}`)
+            axios.get(`https://group-chat-app-poq9.onrender.com:10000/user/${userEmail}`)
             .then((response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 if(response.data.joinedRoom != null) {
                     dispatch(setRoomId(response.data.joinedRoom));
                 }

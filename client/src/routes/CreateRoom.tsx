@@ -20,7 +20,7 @@ function CreateRoom() {
         if(!user.email) {
             return;
         }
-        const response = await axios.post("http://localhost:3001/room/create", {
+        const response = await axios.post("https://group-chat-app-poq9.onrender.com:10000/room/create", {
             "userEmail": user.email,
             "roomName": roomName
         })
