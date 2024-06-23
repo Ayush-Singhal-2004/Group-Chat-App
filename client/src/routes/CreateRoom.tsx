@@ -9,7 +9,6 @@ import { setRoom } from "../redux/feature/room/roomSlice";
 function CreateRoom() {
 
     const user = useSelector((state: RootState) => state.user);
-    const room = useSelector((state: RootState) => state.room);
 
     const [roomName, setRoomName] = useState<string>("");
 
