@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import axios from "axios";
-import { socket } from "../routes/ChatRoom";
 
 type GroupMemberPropType = {
     "username": string,
