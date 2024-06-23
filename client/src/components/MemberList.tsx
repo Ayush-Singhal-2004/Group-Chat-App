@@ -27,7 +27,7 @@ function MemberList(props: any) {
     const room = useSelector((state: RootState) => state.room);
 
     const getMemberList = async() => {
-        const response = await axios.post("https://group-chat-app-poq9.onrender.com:10000/user/details", {
+        const response = await axios.post("https://group-chat-app-poq9.onrender.com/user/details", {
             "users": room.members
         })
         console.log(response.data);
