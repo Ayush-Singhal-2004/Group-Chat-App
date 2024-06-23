@@ -6,4 +6,8 @@ router.get("/", (req, res) => {
     res.send("Welcome user");
 })
 
+router.get("/test", (req, res) => {
+    res.send("Hello World");
+})
+
 export default router;
