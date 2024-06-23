@@ -1,21 +1,49 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import axios from "axios";
+import { socket } from "../routes/ChatRoom";
 
 type GroupMemberPropType = {
-    "member": string
+    "username": string,
+    "profileImage": string
 }
 
-function GroupMember({member}: GroupMemberPropType) {
+function GroupMember(data: GroupMemberPropType) {
     return (
-        <div className="bg-[#242424] py-4 pl-3 rounded cursor-pointer mb-2">
-            <h1>{member}</h1>
+        <div className="bg-[#242424] py-3 pl-3 rounded cursor-pointer mb-2
+        flex items-center gap-3">
+            <img src={data.profileImage} className="h-10 rounded-full" />
+            <h1>{data.username}</h1>
         </div>
     )
 }
 
 function MemberList(props: any) {
 
-    const [roomId, setRoomId] = useState<string>("Hello World");
+    const [roomId, setRoomId] = useState<string>("#####");
     const [copyToClipBoardAlert, setCopyToClipBoardAlert] = useState<boolean>(false);
+    const [members, setMembers] = useState<GroupMemberPropType[]>([]);
+
+    const room = useSelector((state: RootState) => state.room);
+
+    const getMemberList = async() => {
+        const response = await axios.post("http://localhost:3001/user/details", {
+            "users": room.members
+        })
+        console.log(response.data);
+        setMembers(response.data);
+    }
+
+    useEffect(() => {
+        if(room.roomId) {
+            setRoomId(room.roomId);
+        }
+    }, [room]);
+
+    useEffect(() => {
+        if(room.members.length > 0) getMemberList();
+    }, [room.members])
 
     const copyToClipBoard = () => {
         setCopyToClipBoardAlert(true);
@@ -35,10 +63,10 @@ function MemberList(props: any) {
         <div className="h-full w-[20%] pr-4 max-sm:w-full max-sm:p-3">
             <div className="flex gap-4">
                 <div className="bg-white text-black cursor-pointer
-                flex items-center justify-center gap-2 rounded-lg relative 
+                flex items-center justify-center rounded-lg relative 
                 bg-opacity-85 mb-8 flex-1"
                 onClick={copyToClipBoard}>
-                    <h1 className="p-2 text-md">{roomId}</h1>
+                    <h1 className="p-2 text-sm">{roomId}</h1>
                     {
                         copyToClipBoardAlert ?
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17"
@@ -48,12 +76,12 @@ function MemberList(props: any) {
                         <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
                         <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
                         </svg> 
-                    :
-                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17"
-                    fill="currentColor" className="bi bi-clipboard" viewBox="0 0 16 16">
-                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-                    </svg>
+                        :
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                        fill="currentColor" className="bi bi-clipboard" viewBox="0 0 16 16">
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+                        </svg>
                     }
                     
                     {
@@ -74,16 +102,15 @@ function MemberList(props: any) {
                 </div>
             </div>
             <div className="h-[85%] overflow-y-scroll">
-                <GroupMember member="Hello" />
-                <GroupMember member="Tom Holland" />
-                <GroupMember member="World" />
-                <GroupMember member="Ayush" />
-                <GroupMember member="Tony Stark" />
-                <GroupMember member="Hello" />
-                <GroupMember member="Tom Holland" />
-                <GroupMember member="World" />
-                <GroupMember member="Ayush" />
-                <GroupMember member="Tony Stark" />
+                {
+                    members.map((member, index) => (
+                        <GroupMember 
+                        profileImage={member?.profileImage} 
+                        username={member?.username}
+                        key={index}
+                        />
+                    ))
+                }
             </div>
         </div>
     )

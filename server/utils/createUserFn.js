@@ -1,8 +1,9 @@
-import { User } from "../models/userSchema.js";
+import { User } from "../models/user.model.js";
 
-async function createUserFn(email, username) {
+async function createUserFn(profileImage, email, username) {
     try {
         await User.create({
+            profileImage: profileImage,
             email: email,
             username: username
         });

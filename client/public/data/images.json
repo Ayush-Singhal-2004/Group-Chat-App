@@ -1,11 +1,11 @@
 [
-    "../../public/images/image1.jpg",
-    "../../public/images/image2.jpg",
-    "../../public/images/image3.jpg",
-    "../../public/images/image4.jpg",
-    "../../public/images/image5.jpg",
-    "../../public/images/image6.jpg",
-    "../../public/images/image7.jpg",
-    "../../public/images/image8.jpg",
-    "../../public/images/image9.jpg"
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image1.jpg?alt=media&token=02d1c53c-0ad7-45a2-8a3c-8501fcb8af49",
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image2.jpg?alt=media&token=e5a26982-14c8-439d-8a4e-177784f3cfe8",
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image3.jpg?alt=media&token=d80320e7-8e82-4bcc-97ae-72bedad06cd3",
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image4.jpg?alt=media&token=10817528-b0d5-4941-aac0-155c911e8e08",
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image5.jpg?alt=media&token=2a650688-2128-4684-88a7-0496a8cb3352",
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image6.jpg?alt=media&token=3a247cb2-6005-4467-8d00-cf68fc265600",
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image7.jpg?alt=media&token=a2970aab-c26c-4168-a4a7-058f3028f2e2",
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image8.jpg?alt=media&token=f6485dd7-f3c2-441d-a1db-5156ff54d415",
+    "https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image9.jpg?alt=media&token=7929194b-e85d-48ff-b447-51443b6ef49e"
 ]

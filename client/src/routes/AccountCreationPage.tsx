@@ -1,4 +1,9 @@
 import { useState, useEffect } from "react"
+import { auth } from "../firebase"
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import axios from "axios";
+
+const provider = new GoogleAuthProvider();
 
 type ProfileImageSectionProps = {
     imageSectionFn: (value: boolean) => void,
@@ -25,7 +30,7 @@ function ProfileImageSection({imageSectionFn, profileImageFn}: ProfileImageSecti
     }
 
     return (
-        <div className="relative ">
+        <div className="relative">
             <svg xmlns="http://www.w3.org/2000/svg" 
             onClick={() => imageSectionFn(false)}
             width="22" height="22" fill="currentColor" 
@@ -50,7 +55,7 @@ function ProfileImageSection({imageSectionFn, profileImageFn}: ProfileImageSecti
 function AccountCreationPage() {
 
     const [name, setName] = useState<string>("");
-    const [profileImage, setProfileImage] = useState<string>("../../public/images/image1.jpg");
+    const [profileImage, setProfileImage] = useState<string>("https://firebasestorage.googleapis.com/v0/b/group-chat-app-4230e.appspot.com/o/image1.jpg?alt=media&token=02d1c53c-0ad7-45a2-8a3c-8501fcb8af49");
 
     const [imageSection, setImageSection] = useState<boolean>(false);
     const [nameError, setNameError] = useState<boolean>(false);
@@ -60,15 +65,35 @@ function AccountCreationPage() {
             setNameError(true);
             return;
         }
-        //TODO
+        //firebase authetication
+        signInWithPopup(auth, provider)
+        .then((result) => {
+            const user = result.user;
+
+            //add user data to db
+            axios.post("http://localhost:3001/user/create", {
+                "profileImage": profileImage,
+                "email": user.email,
+                "username": name
+            })
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+
+        }).catch((error) => {
+            console.log(error);
+        });
     }
 
     return (
-        <div>
+        <div className="w-screen flex justify-center items-center">
             {
                 imageSection ? <ProfileImageSection imageSectionFn={setImageSection} profileImageFn={setProfileImage} /> 
                 : 
-                <div className="flex flex-col gap-6 items-center">
+                <div className="flex flex-col gap-6 items-center justify-center">
                     <div className="relative cursor-pointer" 
                     onClick={() => setImageSection(!imageSection)}>
                         <img src={profileImage} alt="" 
@@ -82,7 +107,7 @@ function AccountCreationPage() {
                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                         </svg>
                     </div>
-                    <div>
+                    <div className="flex flex-col items-center">
                         {
                             nameError ?
                             <p className="text-xs mb-2 text-red-300">

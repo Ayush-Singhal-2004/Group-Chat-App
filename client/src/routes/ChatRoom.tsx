@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from "react"
 import MemberList from "../components/MemberList"
+import { io } from "socket.io-client"
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../redux/store";
+import { setRoom } from "../redux/feature/room/roomSlice";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-type MessagePropType = {
-    "message": string
-}
+export const socket = io("http://localhost:3001");
 
-function Message({message}: MessagePropType) {
+function Message({message}: any) {
     return (
         <div className="mb-3">
             <div>
-                <p className="text-xs mb-1 opacity-90">Hello World</p>
+                <p className="text-xs mb-1 opacity-90">{message.sender.username}</p>
                 <p className="text-black bg-white py-2 px-3 rounded-md 
-                max-w-[40%] inline-block">
-                    {message}
+                max-w-[40%] inline-block max-sm:max-w-[70%]">
+                    {message.message}
                 </p>
             </div>
         </div>
@@ -24,8 +28,71 @@ function ChatRoom() {
     const [message, setMessage] = useState<string>("");
     const [isSmViewPort, setIsSmViewPort] = useState<boolean>(false);
     const [memberSection, setMemberSection] = useState<boolean>(false);
+    const [roomFlag, setRoomFlag] = useState<boolean>(false);
+    const [messages, setMessages] = useState<object[]>([]);
 
     const messageSectionRef = useRef<HTMLDivElement>(null);
+
+    const user = useSelector((state: RootState) => state.user);
+    const room = useSelector((state: RootState) => state.room);
+    const dispatch = useDispatch();
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!roomFlag && room.roomId) {
+            setRoomFlag(true);
+        }
+    }, [room])
+
+    useEffect(() => {
+        if(room.roomId) {
+            socket.emit("getRoom-details", {
+                "userEmail": user.email,
+                "roomId": room.roomId
+            });
+        }
+    }, [roomFlag])
+
+    useEffect(() => {
+        if(room.roomId) {
+            axios.get(`http://localhost:3001/room/${room.roomId}/chats`)
+            .then((res) => {
+                console.log(res);
+                setMessages(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
+    }, [roomFlag])
+
+    useEffect(() => {
+        if(room.roomId) {   
+            socket.emit("join-room", {
+                "roomId": room.roomId
+            })
+        }
+    }, [roomFlag])
+
+    useEffect(() => {
+        socket.on("room-details", (roomDetails) => {
+            console.log(roomDetails);
+            dispatch(setRoom({
+                "roomId": roomDetails._id,
+                "roomName": roomDetails.name,
+                "members": roomDetails.members
+            }));
+        })
+    }, [])
+
+    useEffect(() => {
+        socket.on("message", (args: any) => {
+            console.log(args);
+            setMessages(args);
+        })
+    }, []);
+
 
     useEffect(() => {
         if(window.innerWidth > 675) {
@@ -37,11 +104,19 @@ function ChatRoom() {
         if(messageSectionRef.current?.scrollTo) {
             messageSectionRef.current.scrollTop = messageSectionRef.current?.scrollHeight
         }
-    }, []);
+    });
 
     const sendMessage = () => {
-        setMessage("");
-        // send message logic
+        if(user.email) {
+            socket.emit("send-message", {
+                "message": {
+                    "email": user.email,
+                    "text": message
+                },
+                "roomId": room.roomId,
+            });
+            setMessage("");
+        }
     }
 
     const handleGroupNameClick = () => {
@@ -50,8 +125,20 @@ function ChatRoom() {
         }
     }
 
-    const exitRoom = () => {
+    const exitRoom = async() => {
         // exit room logic
+        if(room.roomId && user.email) {
+            try {
+                const response = await axios.post("http://localhost:3001/room/exit", {
+                    "userEmail":  user.email,
+                    "roomId": room.roomId
+                });
+                if(response.data.status) {
+                    navigate("/");
+                }
+            }
+            catch(err) {}
+        }
     }
 
     return (
@@ -65,13 +152,17 @@ function ChatRoom() {
                     }
                     <div className="flex-1 flex flex-col gap-2 bg-[#242424] rounded-md p-2">
                         <div className="bg-[#303030] rounded pl-3 flex 
-                        items-center justify-between" onClick={exitRoom}>
+                        items-center justify-between">
                             <h1 className="text-xl cursor-pointer"
                             onClick={handleGroupNameClick}>
-                                Group Name
+                                {
+                                    room.roomName
+                                }
                             </h1>
                             <h1 className="cursor-pointer flex items-center gap-2 
-                            border-gray-600 border hover:border-red-400 p-3 rounded-md">
+                            border-gray-600 border hover:border-red-400 p-3 rounded-md"
+                            onClick={exitRoom}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                 fill="currentColor" className="bi bi-box-arrow-left"
                                 viewBox="0 0 16 16">
@@ -84,16 +175,12 @@ function ChatRoom() {
 
                         <div className="flex-1 rounded p-2 overflow-y-scroll"
                         ref={messageSectionRef}>
-                            <Message message="Hello" />
-                            <Message message="Hi" />
-                            <Message message="How are you??" />
-                            <Message message="Good!! WBU!?" />
-                            <Message message="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos saepe, dolores quod quis, aut quas quam culpa modi pariatur maxime est inventore libero, odit dolore soluta animi eligendi voluptatem illo." />
-                            <Message message="Hello" />
-                            <Message message="Hi" />
-                            <Message message="How are you??" />
-                            <Message message="Good!! WBU!?" />
-                            <Message message="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos saepe, dolores quod quis, aut quas quam culpa modi pariatur maxime est inventore libero, odit dolore soluta animi eligendi voluptatem illo." />
+                            {
+                                messages.map((mssg, idx) => (
+                                    <Message message={mssg} 
+                                    key={idx}/>
+                                ))
+                            }
                         </div>
                         
                         <div className="bg-[#303030] flex items-center gap-5">

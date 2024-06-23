@@ -1,22 +1,26 @@
-import { v4 } from "uuid"
-import { Room } from "../models/roomSchema.js";
+import { User } from "../models/user.model.js";
+import { Room } from "../models/room.model.js";
 
-async function createRoomFn(roomName) {
-    const roomId = v4();
+async function createRoomFn(userEmail, roomName) {
+    const user = await User.findOne({ "email": userEmail }).exec();
     try {
-        const newRoom = new Room({
-            //TODO
+        const room = await Room.create({
+            "name": roomName,
+            "members": [user]
         });
-        Promise.resolve({
+        await User.findOneAndUpdate({"email": userEmail}, {"joinedRoom": room._id})
+
+        return Promise.resolve({
             "status": "success",
-            "message": "Room created successfully"
+            "message": "Room created successfully",
+            "room": room
         })
     }
     catch(err) {
-        Promise.reject({
+        return Promise.reject({
             "status": "error",
             "message": "Error creating room"
-        });
+        })
     }
 }
 

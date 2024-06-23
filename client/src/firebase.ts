@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBs52ss-PiRE5f2evEEmppHmjYE3bE_Lpw",
-  authDomain: "chatroom-io-9422e.firebaseapp.com",
-  projectId: "chatroom-io-9422e",
-  storageBucket: "chatroom-io-9422e.appspot.com",
-  messagingSenderId: "203150986483",
-  appId: "1:203150986483:web:bb3996e683591534f53b86",
-  measurementId: "G-D6J34ETPFC"
+  apiKey: "AIzaSyDVv4lRRTMJJMRJnwrZLY0Eacj_rNJE6a4",
+  authDomain: "chat-room-4be1c.firebaseapp.com",
+  projectId: "chat-room-4be1c",
+  storageBucket: "chat-room-4be1c.appspot.com",
+  messagingSenderId: "766391704837",
+  appId: "1:766391704837:web:91f5e3537ad52b8f426b6c",
+  measurementId: "G-NC7RC10H3Z"
 };
 
 const app = initializeApp(firebaseConfig);

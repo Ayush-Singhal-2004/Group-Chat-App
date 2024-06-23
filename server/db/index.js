@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import "dotenv/config"
 import { app } from "../app.js";
+import "dotenv/config"
+import { httpServer } from "../index.js";
 
 const connectDB = async() => {
     try {
@@ -8,6 +10,9 @@ const connectDB = async() => {
         app.on("error", (err) => {
             console.log(err);
             process.exit(1);
+        })
+        httpServer.listen(process.env.PORT, () => {
+            console.log(`Server is running on port ${process.env.PORT}`);
         })
         Promise.resolve();
     }
